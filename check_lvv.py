@@ -21,9 +21,9 @@ def check_lvv():
     # Two cron jobs fire daily (18:15 UTC and 19:15 UTC). Only the one landing
     # at hour 21 Helsinki time is the intended run; skip the other.
     # if now_helsinki.hour != 21: # increase tolerate
-    if now_helsinki.hour not in (21, 22, 23):
-        print(f"Not check time (Helsinki {now_helsinki.strftime('%H:%M')}), skipping")
-        return
+    # if now_helsinki.hour not in (21, 22, 23):
+    #     print(f"Not check time (Helsinki {now_helsinki.strftime('%H:%M')}), skipping")
+    #     return
 
     today = now_helsinki.date()
     print(f"Checking relay '{relay_name}' for date {today} (Helsinki time)")
