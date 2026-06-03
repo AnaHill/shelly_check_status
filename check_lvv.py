@@ -1,7 +1,7 @@
-"""Check if LVV relay was on today and send ntfy.sh notification if not."""
+"""Check if LVV relay was on yesterday and send ntfy.sh notification if not."""
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 import requests
@@ -18,15 +18,8 @@ def check_lvv():
     notify_always = os.environ.get("NOTIFY_ALWAYS", "").lower() == "true"
 
     now_helsinki = datetime.now(HELSINKI)
-    # Two cron jobs fire daily (18:15 UTC and 19:15 UTC). Only the one landing
-    # at hour 21 Helsinki time is the intended run; skip the other.
-    # if now_helsinki.hour != 21: # doesn't necessary work so increase tolerate
-    if now_helsinki.hour not in (21, 22, 23):
-        print(f"Not check time (Helsinki {now_helsinki.strftime('%H:%M')}), skipping")
-        return
-
-    today = now_helsinki.date()
-    print(f"Checking relay '{relay_name}' for date {today} (Helsinki time)")
+    yesterday = (now_helsinki - timedelta(days=1)).date()
+    print(f"Checking relay '{relay_name}' for date {yesterday} (Helsinki time)")
 
     df = fetch_shelly_data(api_key)
 
@@ -40,17 +33,17 @@ def check_lvv():
         lvv["pvm"] = lvv["pvm"].dt.tz_localize("UTC")
     lvv["pvm_helsinki"] = lvv["pvm"].dt.tz_convert(HELSINKI)
 
-    lvv_today = lvv[lvv["pvm_helsinki"].dt.date == today]
+    lvv_today = lvv[lvv["pvm_helsinki"].dt.date == yesterday]
     was_on = lvv_today["relestatus"].any()
 
     on_times = lvv_today[lvv_today["relestatus"]]["pvm_helsinki"].tolist()
 
     if not was_on:
-        message = f"{relay_name} not on today! ({today})"
+        message = f"{relay_name} not on yesterday! ({yesterday})"
     elif notify_always:
-        message = f"OK (debug): {relay_name} was on today at: {[str(t) for t in on_times]}"
+        message = f"OK (debug): {relay_name} was on yesterday at: {[str(t) for t in on_times]}"
     else:
-        print(f"OK: {relay_name} was on today at: {[str(t) for t in on_times]}")
+        print(f"OK: {relay_name} was on yesterday at: {[str(t) for t in on_times]}")
         return
 
     requests.post(

@@ -2,10 +2,7 @@ name: Check LVV daily
 
 on:
   schedule:
-    # Two entries so it always fires at 21:15 Helsinki local time.
-    # The script skips whichever run doesn't land at Helsinki hour 21.
-    - cron: '15 18 * * *'  # 21:15 EEST (UTC+3, summer, late-Mar to late-Oct)
-    - cron: '15 19 * * *'  # 21:15 EET  (UTC+2, winter, late-Oct to late-Mar)
+    - cron: '0 6 * * *'  # 6:00 UTC = 8-9 AM Helsinki; checks yesterday's data
   workflow_dispatch:  # allows manual trigger from GitHub UI
 
 jobs:
@@ -21,7 +18,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Check if LVV was on today
+      - name: Check if LVV was on yesterday
         run: python check_lvv.py
         env:
           SMART_MONITORING_KEY: ${{ secrets.SMART_MONITORING_KEY }}

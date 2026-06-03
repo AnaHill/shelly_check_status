@@ -2,9 +2,9 @@
 
 ## What this project does
 
-Daily check: did the Shelly smart relay named **LVV** turn on today?
+Daily check: did the Shelly smart relay named **LVV** turn on yesterday?
 If not → send a push notification via ntfy.sh.
-Runs every day at **21:15 Helsinki local time** via GitHub Actions.
+Runs every day at **6:00 UTC (8–9 AM Helsinki)** via GitHub Actions.
 
 ## Key files
 
@@ -26,11 +26,7 @@ Returns hourly relay records. Each row = one hour, with fields:
 
 ## Important design decisions
 
-**DST handling:** GitHub Actions cron is always UTC, so two cron entries are used:
-- `15 18 * * *` UTC = 21:15 EEST (summer, UTC+3)
-- `15 19 * * *` UTC = 21:15 EET (winter, UTC+2)
-
-The script guards with `datetime.now(Helsinki).hour == 21` and silently skips the run that lands at the wrong hour.
+**Scheduling:** Single cron at `0 6 * * *` UTC (6 AM UTC = 8–9 AM Helsinki). Checks *yesterday's* data so GitHub's cron delays (often 30–90 min) don't matter — the data is always complete by then. No DST handling needed.
 
 **Notifications:** [ntfy.sh](https://ntfy.sh) — free, no account needed to publish. Install the ntfy phone app and subscribe to your topic.
 
@@ -51,5 +47,5 @@ In the repo: **Settings → Secrets and variables → Actions**
 ```bash
 cp .env.example .env   # add your API key
 pip install -r requirements.txt
-python check_lvv.py    # note: skips if local time is not 21:xx Helsinki
+python check_lvv.py    # checks yesterday's LVV data
 ```
