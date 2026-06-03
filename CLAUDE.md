@@ -13,7 +13,6 @@ Runs every day at **6:00 UTC (8–9 AM Helsinki)** via GitHub Actions.
 | `check_lvv.py` | Main script: fetches data, checks LVV, sends notification |
 | `get_data_from_shelly_api.py` | Fetches relay history from the SmartMonitoring API |
 | `.github/workflows/check_lvv.yml` | GitHub Actions cron job |
-| `.env.example` | Template for local API key (copy to `.env`) |
 
 ## Data source
 
@@ -45,7 +44,6 @@ In the repo: **Settings → Secrets and variables → Actions**
 ## Local development
 
 ```bash
-cp .env.example .env   # add your API key
 pip install -r requirements.txt
-python check_lvv.py    # checks yesterday's LVV data
+SMART_MONITORING_KEY=your_key NTFY_TOPIC=your_topic python check_lvv.py
 ```

@@ -1,23 +1,21 @@
 # Shelly LVV status check
 
-Checks daily whether a Shelly smart relay (LVV) was on that day, and sends a push notification if it wasn't.
+Checks daily whether a Shelly smart relay (LVV) was on the previous day, and sends a push notification if it wasn't.
 
-Runs automatically every day at **21:15 Helsinki time** via GitHub Actions. Notifications are delivered via [ntfy.sh](https://ntfy.sh) — free, no account needed.
+Runs automatically every morning at **6:00 UTC (8–9 AM Helsinki)** via GitHub Actions, checking yesterday's data. Notifications are delivered via [ntfy.sh](https://ntfy.sh) — free, no account needed.
 
 ## How it works
 
 1. GitHub Actions fetches relay data from the [SmartMonitoring API](https://spot-hinta.fi)
-2. Checks if the LVV relay was active at any point today (Helsinki timezone)
-3. If not → sends a push notification: `LVV not on today!`
+2. Checks if the LVV relay was active at any point yesterday (Helsinki timezone)
+3. If not → sends a push notification: `LVV not on yesterday!`
 
 ## Setup
 
-### 1. Clone and configure
+### 1. Clone
 
 ```bash
 git clone <your-repo-url>
-cp .env.example .env
-# Edit .env and add your SmartMonitoring API key
 ```
 
 ### 2. Set up push notifications (ntfy.sh)
@@ -38,7 +36,7 @@ In your repo: **Settings → Secrets and variables → Actions**
 
 ### 4. Push to GitHub
 
-Once the repo is pushed, GitHub Actions will run automatically every evening. You can also trigger it manually via **Actions → Check LVV daily → Run workflow**.
+Once the repo is pushed, GitHub Actions will run automatically every morning. You can also trigger it manually via **Actions → Check LVV daily → Run workflow**.
 
 ## Configuration
 
