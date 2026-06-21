@@ -2,7 +2,7 @@
 
 Checks daily whether a Shelly smart relay (LVV) was on the previous day, and sends a push notification if it wasn't.
 
-Runs automatically every morning at **6:00 UTC (8–9 AM Helsinki)** via GitHub Actions, checking yesterday's data. Notifications are delivered via [ntfy.sh](https://ntfy.sh) — free, no account needed.
+Runs automatically every morning at **00:01 UTC (2-3 AM Helsinki)** via GitHub Actions, checking yesterday's data. Notifications are delivered via [ntfy.sh](https://ntfy.sh) — free, no account needed.
 
 ## How it works
 
